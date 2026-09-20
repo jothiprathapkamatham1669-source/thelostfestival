@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Ganesha – The Lost Festival | Ganesh Chaturthi Adventure &amp; Puzzle Game</title>
+  <meta name="description" content="Play Ganesha – The Lost Festival! A joyful, respectful Ganesh Chaturthi adventure and puzzle game where you restore the divine festival energy across 5 magnificent levels.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐘</text></svg>">
+</head>
+<body>
+  <div id="game-wrapper">
+    <!-- Atmospheric Ambient Rangoli Glow -->
+    <div class="bg-mandala"></div>
+
+    <main id="game-container" role="application" aria-label="Ganesha The Lost Festival Game">
+      <!-- 2D Canvas Viewport -->
+      <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+      <!-- Falling Flower Petal Ambient Particle Overlay -->
+      <div id="petal-overlay"></div>
+
+      <!-- In-Game Heads Up Display (HUD) -->
+      <header id="game-hud" style="display: none;">
+        <div class="hud-group">
+          <div class="hud-level-title" id="hud-level-name">LEVEL 1 — SACRED FOREST</div>
+          <div id="hud-style-badge" class="hud-style-badge" style="display: none;">✨ SUVARNA CELESTIAL STYLE</div>
+          <div class="hud-item">
+            <span class="hud-icon">🏆</span>
+            <span>Score:</span>
+            <span id="hud-score" style="color:#FFE082;">0</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-icon">🥇</span>
+            <span>Best:</span>
+            <span id="hud-highscore" style="color:#FFD54F;">0</span>
+          </div>
+        </div>
+
+        <div class="hud-group">
+          <div class="hud-item">
+            <div class="hud-hearts" id="hud-hearts">❤️❤️❤️</div>
+          </div>
+          <div class="hud-item hud-timer" id="hud-timer-container">
+            <span class="hud-icon">⏱️</span>
+            <span id="hud-timer">01:30</span>
+          </div>
+          <div class="hud-meters">
+            <div class="meter-wrapper" title="Divine Energy Restored">
+              <span>⭐ Energy: <strong id="hud-energy-pct">0%</strong></span>
+              <div class="mini-bar">
+                <div class="mini-fill energy-fill" id="hud-energy-bar"></div>
+              </div>
+            </div>
+            <div class="meter-wrapper" title="Wisdom Power Charge">
+              <span>✨ Wisdom: <strong id="hud-wisdom-pct">0%</strong></span>
+              <div class="mini-bar">
+                <div class="mini-fill wisdom-fill" id="hud-wisdom-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-hud-sound" class="hud-controls-btn" title="Toggle Sound">🔊</button>
+          <button id="btn-hud-pause" class="hud-controls-btn" title="Pause Game">⏸️</button>
+          <button id="btn-hud-back" class="hud-controls-btn hud-back-btn" title="Back to Main Menu">🏠 BACK</button>
+        </div>
+      </header>
+
+      <!-- Floating Active Wisdom Power Notification Badge -->
+      <div id="wisdom-card">
+        <span id="wisdom-icon">🛡️</span>
+        <span id="wisdom-title">Divine Shield Active!</span>
+      </div>
+
+      <!-- ====================================================================
+           MODAL SCREENS
+           ==================================================================== -->
+
+      <!-- 1. OPENING SCREEN / MAIN MENU -->
+      <section id="screen-start" class="modal-screen active">
+        <div class="modal-content">
+          <div class="title-diya-row">
+            <span class="diya-flame">🪔</span>
+            <div class="festive-chant">Ganapati Bappa Morya! 🙏</div>
+            <span class="diya-flame">🪔</span>
+          </div>
+          <h1 class="festive-title">GANESHA</h1>
+          <div class="festive-title" style="font-size: 26px; margin-top: -6px; margin-bottom: 8px;">THE LOST FESTIVAL</div>
+          <p class="festive-subtitle">“Restore the festival. Solve the mysteries. Bring back the celebration!”</p>
+          <div class="festive-divider"></div>
+
+          <div id="start-celestial-badge" class="celestial-badge" style="display: none;">🌟 CELESTIAL EXPANSION UNLOCKED</div>
+          <div class="btn-group">
+            <button id="btn-play-game" class="btn-festive">▶️ PLAY GAME</button>
+            <button id="btn-select-level" class="btn-festive btn-celestial" style="display: none;">🗺️ SELECT REALM (1–10)</button>
+            <button id="btn-how-to-play" class="btn-festive btn-secondary">📖 HOW TO PLAY</button>
+            <button id="btn-high-scores" class="btn-festive btn-secondary">🏆 HIGH SCORE</button>
+            <button id="btn-settings" class="btn-festive btn-secondary">⚙️ SETTINGS</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. HOW TO PLAY TUTORIAL SCREEN -->
+      <section id="screen-instructions" class="modal-screen">
+        <div class="modal-content">
+          <div class="festive-chant">Sacred Journey Guide 🙏</div>
+          <h2 class="festive-title" style="font-size: 28px;">HOW TO PLAY</h2>
+          <div class="festive-divider"></div>
+
+          <div class="guide-grid">
+            <div class="guide-card">
+              <h4>🐘 Move Ganesha</h4>
+              <p>Use <strong>Arrow Left / Right</strong> or touch ⬅️ / ➡️ to guide Lord Ganesha through sacred lands.</p>
+            </div>
+            <div class="guide-card">
+              <h4>🦘 Sacred Jump</h4>
+              <p>Press <strong>Space / Up Arrow</strong> or tap ⬆️ to leap across platforms and gather floating blessings.</p>
+            </div>
+            <div class="guide-card">
+              <h4>🍬 Modaks &amp; Flowers</h4>
+              <p>Gather delicious modaks (+10) and fresh marigolds (+10) to honor the festival preparations.</p>
+            </div>
+            <div class="guide-card">
+              <h4>⭐ Divine Energy</h4>
+              <p>Collect 5 sacred glowing Divine Energy orbs in each realm to awaken ancient portals and shrines (+50).</p>
+            </div>
+            <div class="guide-card">
+              <h4>🪔 Light Diyas</h4>
+              <p>In the Festival City, touch the 5 sacred lamps to illuminate the path and dispel dark gloom (+20).</p>
+            </div>
+            <div class="guide-card">
+              <h4>🧩 Sacred Puzzles</h4>
+              <p>Solve path mazes, pattern sequences (🔔 🌺 🪔), and offering matching trials (+100).</p>
+            </div>
+            <div class="guide-card">
+              <h4>✨ Wisdom Powers</h4>
+              <p>Press <strong>E</strong> or tap ✨ to unleash Time Freeze, Obstacle Breaker, Double Score, Extra Life, or Divine Shield!</p>
+            </div>
+            <div class="guide-card">
+              <h4>❤️ Keep 3 Lives</h4>
+              <p>Avoid moving festival carts, spikes, and hazardous rolling rocks to preserve your hearts.</p>
+            </div>
+            <div class="guide-card">
+              <h4>🎉 Restore Festival</h4>
+              <p>Reach the Maha Mandir Sanctum and channel 100% Divine Energy to celebrate with Aarti &amp; fireworks!</p>
+            </div>
+          </div>
+
+          <button id="btn-close-instructions" class="btn-festive" style="max-width: 220px; margin: 8px auto 0 auto;">◀ BACK</button>
+        </div>
+      </section>
+
+      <!-- 3. HIGH SCORE LEADERBOARD SCREEN -->
+      <section id="screen-high-scores" class="modal-screen">
+        <div class="modal-content">
+          <div class="festive-chant">Festival Hall of Fame 🌟</div>
+          <h2 class="festive-title" style="font-size: 28px;">HIGH SCORES</h2>
+          <div class="festive-divider"></div>
+
+          <div class="high-score-list">
+            <div class="high-score-row gold">
+              <div class="high-score-rank">🥇 Player (Current Best)</div>
+              <div id="hs-player-score">0 pts</div>
+            </div>
+            <div class="high-score-row">
+              <div class="high-score-rank">🥈 Festival Guardian</div>
+              <div>4,250 pts</div>
+            </div>
+            <div class="high-score-row">
+              <div class="high-score-rank">🥉 Modak Master</div>
+              <div>3,100 pts</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-around; font-size: 13px; color: #FFE082; margin-bottom: 16px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px;">
+            <div>Highest Level: <strong id="hs-highest-level">1</strong></div>
+            <div>Fastest Run: <strong id="hs-fastest-time">--:--</strong></div>
+            <div>Divine Energy: <strong id="hs-total-energy">0</strong></div>
+          </div>
+
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="btn-close-high-scores" class="btn-festive" style="max-width: 180px;">◀ BACK</button>
+            <button id="btn-reset-scores" class="btn-festive btn-secondary" style="max-width: 180px;">🔄 RESET</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. SETTINGS MODAL -->
+      <section id="screen-settings" class="modal-screen">
+        <div class="modal-content">
+          <div class="festive-chant">Settings &amp; Audio ⚙️</div>
+          <h2 class="festive-title" style="font-size: 28px;">SETTINGS</h2>
+          <div class="festive-divider"></div>
+
+          <div class="settings-list">
+            <div class="setting-item">
+              <span>🎵 Background Music</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-music" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>🔊 Sound Effects (SFX)</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-sfx" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>🌺 Falling Petals / Motion</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-petals" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item" id="setting-game-style-row">
+              <span>✨ Game Style</span>
+              <select id="select-game-style" class="settings-select">
+                <option value="classic">🪔 Festive Classic</option>
+                <option value="celestial">✨ Suvarna Celestial (Unlocked at 4 Levels)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px;">
+            <button id="btn-close-settings" class="btn-festive" style="max-width: 180px;">◀ BACK</button>
+            <button id="btn-settings-how" class="btn-festive btn-secondary" style="max-width: 180px;">📖 GUIDE</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4B. IN-GAME PAUSE MODAL -->
+      <section id="screen-pause" class="modal-screen">
+        <div class="modal-content" style="max-width: 440px;">
+          <div class="festive-chant">Ganesha's Sacred Journey ⏸️</div>
+          <h2 class="festive-title" style="font-size: 30px;">GAME PAUSED</h2>
+          <p id="pause-level-info" style="font-size: 14px; color: #FFE082; margin-bottom: 14px;">Level 1 — Sacred Forest</p>
+          <div class="festive-divider"></div>
+
+          <div class="btn-group">
+            <button id="btn-pause-resume" class="btn-festive">▶️ RESUME JOURNEY</button>
+            <button id="btn-pause-restart" class="btn-festive btn-secondary">🔄 RESTART LEVEL</button>
+            <button id="btn-pause-menu" class="btn-festive btn-secondary">🏠 EXIT TO MAIN MENU</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. IN-GAME PUZZLE MODAL -->
+      <section id="puzzle-modal" class="modal-screen">
+        <div class="modal-content" style="max-width: 520px;">
+          <div class="festive-chant" id="puzzle-realm-tag">Level 1 Sacred Trial</div>
+          <h3 class="festive-title" id="puzzle-title" style="font-size: 24px;">Ancient Path Puzzle</h3>
+          <p class="puzzle-prompt" id="puzzle-instruction">Guide the sacred light path to open the temple portal!</p>
+          <div class="festive-divider"></div>
+
+          <!-- Dynamic Puzzle Container -->
+          <div id="puzzle-content" class="puzzle-container">
+            <!-- Rendered dynamically by game.js based on puzzle type -->
+          </div>
+
+          <div id="puzzle-status" style="font-size: 14px; font-weight: 700; min-height: 20px; color: #FFD54F; margin-top: 4px;"></div>
+        </div>
+      </section>
+
+      <!-- 6. LEVEL COMPLETE TRANSITION MODAL -->
+      <section id="screen-level-complete" class="modal-screen">
+        <div class="modal-content" style="max-width: 480px;">
+          <div class="festive-chant">Auspicious Victory! 🌟</div>
+          <h2 class="festive-title" id="lc-title" style="font-size: 32px;">Level 1 Complete!</h2>
+          <div class="festive-divider"></div>
+
+          <div style="font-size: 15px; line-height: 1.8; color: #FFF9C4; margin: 16px 0;">
+            <div>Level Completion: <strong>+200 pts</strong></div>
+            <div>Time Remaining: <span id="lc-remaining-time">00:45</span></div>
+            <div>Time Bonus: <strong id="lc-time-bonus" style="color: #FFD54F;">+225 pts</strong></div>
+            <div style="font-size: 18px; margin-top: 8px; color: #FFE082;">
+              Total Score: <strong id="lc-total-score">425</strong>
+            </div>
+          </div>
+
+          <button id="btn-next-level" class="btn-festive" style="margin: 0 auto;">NEXT REALM ▶️</button>
+        </div>
+      </section>
+
+      <!-- 7. GAME OVER MODAL -->
+      <section id="screen-game-over" class="modal-screen">
+        <div class="modal-content" style="max-width: 480px;">
+          <div class="festive-chant">Faith Never Fades 🙏</div>
+          <h2 class="festive-title" id="go-title" style="font-size: 34px; color: #FF5252;">GAME OVER</h2>
+          <div class="festive-divider"></div>
+
+          <p id="go-subtitle" style="font-size: 14px; color: #FFCDD2; margin-bottom: 12px;">Ganesha's energy waned, but the festival can still be saved!</p>
+
+          <div class="celebration-stats" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="stat-box">
+              <label>Final Score</label>
+              <div class="value" id="go-final-score">0</div>
+            </div>
+            <div class="stat-box">
+              <label>Highest Level</label>
+              <div class="value" id="go-level">Level 1</div>
+            </div>
+            <div class="stat-box">
+              <label>Divine Energy</label>
+              <div class="value" id="go-energy">0%</div>
+            </div>
+            <div class="stat-box">
+              <label>Session Best</label>
+              <div class="value" id="go-best-score">0</div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button id="btn-retry-level" class="btn-festive">🔄 TRY AGAIN</button>
+            <button id="btn-menu-from-go" class="btn-festive btn-secondary">🏠 MAIN MENU</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. FINAL LEADERBOARD & RESTORE THE FESTIVAL CHAMPION SCREEN -->
+      <section id="screen-champion" class="modal-screen">
+        <div class="modal-content" style="max-width: 580px;">
+          <div class="champion-badge">🏆</div>
+          <div class="festive-chant">Aarti &amp; Blessings Complete! ✨</div>
+          <h2 class="festive-title" id="champ-title" style="font-size: 32px;">FESTIVAL RESTORED!</h2>
+          <p id="champ-desc" style="font-size: 15px; color: #FFE082; margin-bottom: 10px;">“You restored the festival!”</p>
+          <div class="festive-chant" style="font-size: 22px; color: #FFD54F;">🎉 GANAPATI BAPPA MORYA! 🎉</div>
+          <div class="festive-divider"></div>
+
+          <div class="celebration-stats">
+            <div class="stat-box">
+              <label>Final Score</label>
+              <div class="value" id="champ-final-score" style="color: #FFD54F;">8,750</div>
+            </div>
+            <div class="stat-box">
+              <label>Levels Completed</label>
+              <div class="value">5 / 5 🌟</div>
+            </div>
+            <div class="stat-box">
+              <label>Divine Energy</label>
+              <div class="value">100% ⭐</div>
+            </div>
+            <div class="stat-box">
+              <label>Lives Remaining</label>
+              <div class="value" id="champ-lives">❤️❤️❤️</div>
+            </div>
+          </div>
+
+          <div class="btn-group" style="margin-top: 14px;">
+            <button id="btn-continue-celestial" class="btn-festive btn-celestial">✨ ENTER CELESTIAL REALMS (LEVEL 6-10) ▶️</button>
+            <button id="btn-champion-realms" class="btn-festive btn-secondary">🗺️ SELECT REALM</button>
+            <button id="btn-play-again" class="btn-festive btn-secondary">🔄 REPLAY CHAPTER 1</button>
+            <button id="btn-champion-scores" class="btn-festive btn-secondary">🏆 HIGH SCORES</button>
+            <button id="btn-champion-menu" class="btn-festive btn-secondary">🏠 MAIN MENU</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. REALM SELECTOR MODAL (LEVELS 1 TO 10) -->
+      <section id="screen-realm-select" class="modal-screen">
+        <div class="modal-content" style="max-width: 580px;">
+          <div class="festive-chant">Sacred Realms of Lord Ganesha 🗺️</div>
+          <h2 class="festive-title" style="font-size: 28px;">SELECT REALM</h2>
+          <p style="font-size: 13px; color: #FFE082; margin-bottom: 8px;">Explore completed and unlocked divine realms:</p>
+          <div class="festive-divider"></div>
+
+          <div class="realm-grid" id="realm-grid-container">
+            <!-- Dynamically populated by game.js with Levels 1 to 10 -->
+          </div>
+
+          <button id="btn-close-realms" class="btn-festive" style="max-width: 200px; margin: 10px auto 0 auto;">◀ BACK</button>
+        </div>
+      </section>
+
+      <!-- Virtual Mobile Controls -->
+      <div id="mobile-controls" class="hidden">
+        <div class="touch-cluster">
+          <button id="touch-left" class="touch-btn" aria-label="Move Left">◀</button>
+          <button id="touch-right" class="touch-btn" aria-label="Move Right">▶</button>
+        </div>
+        <div class="touch-cluster">
+          <button id="touch-power" class="touch-btn btn-power-touch" aria-label="Wisdom Power">
+            <span>✨</span>
+            <span style="font-size: 10px;">POWER</span>
+          </button>
+          <button id="touch-jump" class="touch-btn" aria-label="Jump">▲</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Audio Synthesizer & Game Scripts -->
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
